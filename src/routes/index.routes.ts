@@ -1,9 +1,12 @@
 import { Router } from "express";
-import { helloWorld } from "../controllers";
+import { getAdmins, helloWorld } from "../controllers";
+import adminRouter from "./admin.routes";
+import { auth } from "../middlewares/auth";
 
-const router = Router();
+const indexRouter = Router();
 
 // Hello world
-router.get("/", helloWorld);
+indexRouter.get("/", helloWorld);
+indexRouter.use("/admin", auth, adminRouter)
 
-export default router;
+export default indexRouter;

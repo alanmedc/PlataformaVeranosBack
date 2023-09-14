@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
-import router from "./routes/index.routes";
+import indexRouter from "./routes/index.routes";
+import adminRoutes from "./routes/admin.routes";
 
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", router)
+// Routes
+app.use("/api", indexRouter)
 
 export default app;

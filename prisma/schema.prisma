@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id_admin Int     @id
+  username String? @db.VarChar(50)
+  password String? @db.VarChar(50)
+}
+
+model area {
+  id_area Int       @id
+  nombre  String?   @db.VarChar(100)
+  color   String?   @db.VarChar(100)
+  url     String?
+  materia materia[]
+}
+
+model grupo {
+  id_grupo      Int         @id
+  periodo       String?     @db.VarChar(10)
+  hora_inicio   DateTime?   @db.Time(6)
+  hora_fin      DateTime?   @db.Time(6)
+  inscritos     Int?
+  costo         Decimal?    @db.Money
+  clave_materia Int?
+  materia       materia?    @relation(fields: [clave_materia], references: [clave], onDelete: NoAction, onUpdate: NoAction, map: "fk_grupo_materia")
+  solicitud     solicitud[]
+}
+
+model materia {
+  clave    Int     @id
+  nombre   String? @db.VarChar(100)
+  semestre Int?    @db.SmallInt
+  id_area  Int?
+  grupo    grupo[]
+  area     area?   @relation(fields: [id_area], references: [id_area], onDelete: NoAction, onUpdate: NoAction, map: "fk_materia_area")
+}
+
+model solicitud {
+  id_solicitud      Int     @id
+  expediente_alumno Int?
+  nombre_alumno     String? @db.VarChar(100)
+  ap_paterno        String? @db.VarChar(100)
+  ap_materno        String? @db.VarChar(100)
+  email_alumno      String? @db.VarChar(200)
+  id_grupo          Int?
+  grupo             grupo?  @relation(fields: [id_grupo], references: [id_grupo], onDelete: NoAction, onUpdate: NoAction, map: "fk_solicitud_grupo")
+}
