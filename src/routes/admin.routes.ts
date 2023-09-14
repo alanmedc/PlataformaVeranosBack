@@ -1,12 +1,9 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import { getAdmins } from "../controllers";
+import { auth } from "../middlewares/auth";
 
-const router = Router();
-const prisma = new PrismaClient();
+const adminRouter = Router();
 
-/*router.get('/admin', async (req, res) => {
-    const admins = await prisma.admin.findMany()
-    res.json(admins)
-})*/
+adminRouter.get('/', getAdmins)
 
-export default router;
+export default adminRouter;
