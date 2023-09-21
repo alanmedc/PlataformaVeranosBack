@@ -13,16 +13,23 @@ export async function getAdmins(req: Request, res: Response) {
 };
 
 export async function createRequest(req: Request, res: Response) {
-    const newRequest = await prisma.solicitud.create({
-        data: {
-            id_solicitud: 1,
-            expediente_alumno: 123456,
-            nombre_alumno: 'Juan',
-            ap_paterno: 'Perez',
-            ap_materno: 'Sanchez',
-            email_alumno: 'juan@example.com',
-            id_grupo: 1,
-        },
-    });
-    return res.json(newRequest);
+    try {
+        const requestData = req.body;
+
+        const requiredFields = ['id_solicitud', 'expediente_alumno', 'nombre_alumno', 'ap_paterno', 'ap_materno', 'email_alumno', 'id_grupo'];
+
+        for (const field of requiredFields) {
+            if (!requestData.hasOwnProperty(field) || requestData[field] === null || requestData[field] === undefined) {
+                return res.status(400).json({ error: `El campo '${field}' es obligatorio` });
+            }
+        }
+        const newRequest = await prisma.solicitud.create({
+            data: requestData,
+        });
+
+        return res.json(newRequest);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al crear la solicitud' });
+    }
 }
