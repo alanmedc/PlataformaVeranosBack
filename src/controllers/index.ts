@@ -36,16 +36,15 @@ export async function createRequest(req: Request, res: Response) {
             groupId = existingGroup.id_grupo;
         } else {
             const newGroup = await prisma.grupo.create({
-                data: {                    
+                data: {
                     clave_materia: requestData.clave_materia,
                 },
             });
             groupId = newGroup.id_grupo;
         }
-        
+
         const newRequest = await prisma.solicitud.create({
             data: {
-                id_solicitud: 3,
                 expediente_alumno: requestData.expediente_alumno,
                 nombre_alumno: requestData.nombre_alumno,
                 ap_paterno: requestData.ap_paterno,
@@ -54,6 +53,19 @@ export async function createRequest(req: Request, res: Response) {
                 id_grupo: groupId,
             },
         });
+
+        if (groupId) {
+            await prisma.grupo.update({
+                where: {
+                    id_grupo: groupId,
+                },
+                data: {
+                    inscritos: {
+                        increment: 1,
+                    },
+                },
+            });
+        }
 
         return res.json(newRequest);
     } catch (error) {

@@ -26,7 +26,7 @@ model grupo {
   periodo       String?     @db.VarChar(10)
   hora_inicio   DateTime?   @db.Time(6)
   hora_fin      DateTime?   @db.Time(6)
-  inscritos     Int?
+  inscritos     Int?        @default(0)
   costo         Decimal?    @db.Money
   clave_materia Int?
   materia       materia?    @relation(fields: [clave_materia], references: [clave], onDelete: NoAction, onUpdate: NoAction, map: "fk_grupo_materia")
