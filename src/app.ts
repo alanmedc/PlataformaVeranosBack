@@ -1,8 +1,6 @@
 import express from "express";
 import cors from "cors";
 import indexRouter from "./routes/index.routes";
-import adminRoutes from "./routes/admin.routes";
-import userRequestRouter from "./routes/userRequest.routes";
 
 const app = express();
 

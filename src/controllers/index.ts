@@ -54,22 +54,20 @@ export async function createRequest(req: Request, res: Response) {
             },
         });
 
-        if (groupId) {
-            await prisma.grupo.update({
-                where: {
-                    id_grupo: groupId,
+        await prisma.grupo.update({
+            where: {
+                id_grupo: groupId,
+            },
+            data: {
+                inscritos: {
+                    increment: 1,
                 },
-                data: {
-                    inscritos: {
-                        increment: 1,
-                    },
-                },
-            });
-        }
+            },
+        });
 
-        return res.json(newRequest);
+        return res.status(201).json({ message: 'Solicitud creada correctamente', data: { id: newRequest.id_solicitud } });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al crear la solicitud' });
+        return res.status(500).json({ message: 'Error al crear la solicitud' });
     }
 }
