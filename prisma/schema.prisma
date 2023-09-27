@@ -9,8 +9,8 @@ datasource db {
 
 model admin {
   id_admin Int     @id
-  username String? @db.VarChar(50)
-  password String? @db.VarChar(50)
+  username String @db.VarChar(50)
+  password String @db.VarChar(50)
 }
 
 model area {
