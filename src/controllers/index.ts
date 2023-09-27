@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import bcrypt from 'bcrypt';
+import { JWT_SECRET } from "../configs/configs";
 
 const prisma = new PrismaClient();
 
@@ -7,11 +9,13 @@ export const helloWorld = (req: Request, res: Response) => {
     res.json({ message: "Hello world" });
 };
 
+//Admin
 export async function getAdmins(req: Request, res: Response) {
     const admins = await prisma.admin.findMany()
     return res.json(admins)
 };
 
+//Solicitudes
 export async function createRequest(req: Request, res: Response) {
     try {
         const requestData = req.body;

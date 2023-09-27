@@ -8,7 +8,7 @@ datasource db {
 }
 
 model admin {
-  id_admin Int     @id
+  id_admin Int     @id @default(autoincrement())
   username String? @db.VarChar(50)
   password String? @db.VarChar(255)
 }

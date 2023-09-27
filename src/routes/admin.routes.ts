@@ -4,6 +4,6 @@ import { auth } from "../middlewares/auth";
 
 const adminRouter = Router();
 
-adminRouter.get('/', getAdmins)
+adminRouter.get('/', getAdmins);
 
 export default adminRouter;
