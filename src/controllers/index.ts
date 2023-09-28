@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
-import { JWT_SECRET } from "../configs/configs";
 
 const prisma = new PrismaClient();
 
