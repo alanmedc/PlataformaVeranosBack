@@ -6,7 +6,8 @@ import { adminLogin } from "../controllers/admin.controller";
 
 const adminRouter = Router();
 
-adminRouter.get('/', getAdmins);
+adminRouter.get('/', auth, getAdmins);
 adminRouter.post('/login', adminLogin);
+
 
 export default adminRouter;
