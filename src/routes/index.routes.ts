@@ -8,8 +8,7 @@ const indexRouter = Router();
 // Hello world
 indexRouter.get("/", helloWorld);
 
-indexRouter.use("/admin", auth, adminRouter);
-
+indexRouter.use("/admin", adminRouter)
 indexRouter.post("/solicitudes", createRequest);
 
 export default indexRouter;
