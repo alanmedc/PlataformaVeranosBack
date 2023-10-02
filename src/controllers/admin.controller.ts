@@ -36,7 +36,7 @@ export const adminLogin = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Admin no encontrado." });
         }
 
-        const isValidPass = bcrypt.compareSync(password, admin.password || "");
+        const isValidPass = bcrypt.compareSync(password, admin.password);
 
         if (!isValidPass) {
             return res.status(400).json({ message: "Contraseña no valida." });
