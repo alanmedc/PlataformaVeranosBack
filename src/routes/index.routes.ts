@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createRequest, getAdmins, helloWorld } from "../controllers";
+import { createRequest, getAdmins, getGroups, helloWorld } from "../controllers";
 import adminRouter from "./admin.routes";
 import { auth } from "../middlewares/auth";
 
@@ -10,5 +10,6 @@ indexRouter.get("/", helloWorld);
 
 indexRouter.use("/admin", adminRouter)
 indexRouter.post("/solicitudes", createRequest);
+indexRouter.get("/grupos",getGroups);
 
 export default indexRouter;
