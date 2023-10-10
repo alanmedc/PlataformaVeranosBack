@@ -67,6 +67,7 @@ async function createGroup(groupData: Omit<grupo, 'id_grupo'>, claveMateria: num
         const newGroup = await prisma.grupo.create({
             data: {
                 ...groupData,
+                admin_created: true,
                 clave_materia: claveMateria,
             },
         });
