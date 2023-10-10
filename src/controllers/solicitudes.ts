@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { OPEN_OCR_API_KEY } from "../configs/configs";
+import { validarCaptura } from "../services/solicitud.services";
 
 export async function apiOcr(req: Request, res: Response) {
     const captura = req.file;
@@ -9,26 +10,38 @@ export async function apiOcr(req: Request, res: Response) {
         return res.status(400).json({ code: "NO_FILE", message: "No se ha enviado ninguna captura de pantalla." });
     }
 
-    const newForm = new FormData();
-    const blob = new Blob([captura.buffer], { type: captura.mimetype });
+    if (!expediente) {
+        return res.status(400).json({ code: "INCOMPLETE_DATA", message: "Faltan los siguientes datos: expediente." });
+    }
 
-    newForm.append("file", blob, captura.originalname);
-    newForm.append("language", "spa");
-    newForm.append("isOverlayRequired", "true");
+    const capturaValida = await validarCaptura(captura.buffer, expediente);
 
-    const resBody = await fetch("https://api.ocr.space/parse/image", {
-        method: "POST",
-        body: newForm,
-        headers: {
-            apikey: OPEN_OCR_API_KEY
-        },
-    }).then((res) => res.json());
-
-    const text = resBody.ParsedResults[0].ParsedText;
-
-    if (!text.includes(expediente)) {
-        return res.status(400).json({ code: "INVALID_FILE", message: "La captura de pantalla no contiene el expediente." });
+    if (!capturaValida) {
+        return res.status(400).json({ code: "INVALID_FILE", message: "La captura de pantalla es inválida." });
     }
 
     return res.status(200).json({ code: "OK", message: "La captura de pantalla es válida." });
+
+    // const newForm = new FormData();
+    // const blob = new Blob([captura.buffer], { type: captura.mimetype });
+
+    // newForm.append("file", blob, captura.originalname);
+    // newForm.append("language", "spa");
+    // newForm.append("isOverlayRequired", "true");
+
+    // const resBody = await fetch("https://api.ocr.space/parse/image", {
+    //     method: "POST",
+    //     body: newForm,
+    //     headers: {
+    //         apikey: OPEN_OCR_API_KEY
+    //     },
+    // }).then((res) => res.json());
+
+    // const text = resBody.ParsedResults[0].ParsedText;
+
+    // if (!text.includes(expediente)) {
+    //     return res.status(400).json({ code: "INVALID_FILE", message: "La captura de pantalla no contiene el expediente." });
+    // }
+
+    // return res.status(200).json({ code: "OK", message: "La captura de pantalla es válida." });
 }
