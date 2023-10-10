@@ -1,4 +1,4 @@
-import { API_KEY } from "../configs/configs";
+import { OPEN_OCR_API_KEY } from "../configs/configs";
 import { Response, Request } from "express";
 import { ocrSpace } from "ocr-space-api-wrapper";
 
