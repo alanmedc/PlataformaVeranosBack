@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { createRequest, getAdmins, helloWorld } from "../controllers";
+import { apiOcr } from "../controllers/solicitudes";
 import adminRouter from "./admin.routes";
 import { auth } from "../middlewares/auth";
-import { apiOcr } from "../services/solicitud.services";
 
 const indexRouter = Router();
 
