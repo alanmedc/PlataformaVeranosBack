@@ -1,26 +1,26 @@
-import { API_KEY } from "../configs/configs";
-import { Response, Request } from "express";
-const { ocrSpace } = require("ocr-space-api-wrapper");
+import { OPEN_OCR_API_KEY } from "../configs/configs";
 
-export async function apiOcr(req: Request, res: Response) {
-    try {
-        const base64Image = ('data:image/jpg;base64,' + req.body.image);
-        const expediente = req.body.expediente;
-        const imageText = await ocrSpace(base64Image, { apiKey: API_KEY, language: 'spa', isOverlayRequired: true});
-        console.log(imageText);
-        const siInscrito = imageText.ParsedResults[0].ParsedText.match('SI, con Recibo pagado');
-        const expedienteCaptura = imageText.ParsedResults[0].ParsedText.match(`EXPEDIENTE: '${expediente}'`)
-        const validSS = siInscrito[0];
-        console.log(validSS);
-        console.log(expedienteCaptura);
-        if(validSS === 'SI, con Recibo pagado'){
-            console.log('ScreenShot valida');
-            res.send('Captura de pantalla valida.')
-        }else{
-            console.log('Sube otra SS.');
-            res.send('Sube otra captura de pantalla')
-        }
-    } catch (error) {
-        console.error(error);
+export async function validarCaptura(imagen: Buffer, expediente: string) {
+    const newForm = new FormData();
+    const blob = new Blob([imagen]);
+
+    newForm.append("file", blob, "captura.png");
+    newForm.append("language", "spa");
+    newForm.append("isOverlayRequired", "true");
+
+    const resBody = await fetch("https://api.ocr.space/parse/image", {
+        method: "POST",
+        body: newForm,
+        headers: {
+            apikey: OPEN_OCR_API_KEY
+        },
+    }).then((res) => res.json());
+
+    const text = resBody.ParsedResults[0].ParsedText;
+
+    if (!text.includes(expediente)) {
+        return false;
     }
+
+    return true;
 }
