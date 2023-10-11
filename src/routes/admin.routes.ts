@@ -9,6 +9,7 @@ const adminRouter = Router();
 adminRouter.get('/', auth, getAdmins);
 adminRouter.post('/login', adminLogin);
 adminRouter.put('/updateGroup/:id', updateGroup);
+adminRouter.get('/grupos/:id/solicitudes',);
 
 
 export default adminRouter;
