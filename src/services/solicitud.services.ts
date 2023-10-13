@@ -15,7 +15,6 @@ export async function validarCaptura(imagen: Buffer, expediente: string) {
             apikey: OPEN_OCR_API_KEY
         },
     }).then((res) => res.json());
-
     const text = resBody.ParsedResults[0].ParsedText;
 
     if (!text.includes(expediente)) {

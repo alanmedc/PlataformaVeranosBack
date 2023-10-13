@@ -16,8 +16,6 @@ indexRouter.get("/", helloWorld);
 
 indexRouter.use("/admin", auth, adminRouter);
 
-indexRouter.post("/solicitudes", createRequest);
-
-indexRouter.post("/ocr", upload.single('imagen'), apiOcr);
+indexRouter.post("/solicitudes", upload.single('captura'), createRequest);
 
 export default indexRouter;
