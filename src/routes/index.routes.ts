@@ -10,6 +10,6 @@ indexRouter.get("/", helloWorld);
 
 indexRouter.use("/admin", adminRouter)
 indexRouter.post("/solicitudes", createRequest);
-indexRouter.get("/grupos",getGroups);
+indexRouter.get("/grupos", getGroups);
 
 export default indexRouter;

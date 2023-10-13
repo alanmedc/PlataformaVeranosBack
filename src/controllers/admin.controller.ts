@@ -115,3 +115,23 @@ export async function updateGroup(req: Request, res: Response) {
         return res.status(500).json({ message: 'Error al actualizar el grupo' });
     }
 }
+
+export async function getRequests(req: Request, res:Response) {
+    try{
+        const groupId = parseInt(req.params.id, 10);
+
+        const existingRequests = await prisma.solicitud.findMany({
+            where: { id_grupo: groupId }
+        });
+
+        if(existingRequests.length == 0){
+            return res.status(400).json({ error: 'No existe ninguna solicitud para el grupo ingresado' });
+        }
+
+        return res.status(200).json(existingRequests);
+
+    } catch(error){
+        console.error(error);
+        return res.status(500).json({ message: 'Error al obtener las solicitudes' })
+    }
+}
