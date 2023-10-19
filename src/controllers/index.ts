@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { validarCaptura } from "../services/solicitud.services";
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -8,11 +9,13 @@ export const helloWorld = (req: Request, res: Response) => {
     res.json({ message: "Hello world" });
 };
 
+//Admin
 export async function getAdmins(req: Request, res: Response) {
     const admins = await prisma.admin.findMany()
     return res.json(admins)
 };
 
+//Solicitudes
 export async function createRequest(req: Request, res: Response) {
     try {
         const requestData = req.body
@@ -90,5 +93,48 @@ export async function createRequest(req: Request, res: Response) {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error al crear la solicitud' });
+    }
+}
+
+//Feed Grupos
+export async function getGroups(req: Request, res: Response) {
+    try {
+        const groups = await prisma.grupo.findMany({
+            where: {
+                OR: [
+                    {
+                        admin_created: {
+                            equals: true
+                        },
+                    },
+                    {
+                        inscritos: {
+                            gte: 5,
+                        },
+                    },
+                ],
+            },
+            include: {
+                materia: {
+                    include: {
+                        area: true,
+                    },
+                },
+            },
+        });
+
+        const formattedGroups = groups.map((group) => ({
+            clave_materia: group.materia?.clave,
+            nombre_materia: group.materia?.nombre,
+            area: group.materia?.area?.nombre,
+            horario: `${group.hora_inicio} - ${group.hora_fin}`,
+            profesor: group.profesor,
+            costo: group.costo,
+        }));
+
+        return res.status(200).json(formattedGroups);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error al obtener los grupos' });
     }
 }

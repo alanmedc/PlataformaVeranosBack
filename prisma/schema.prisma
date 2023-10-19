@@ -8,9 +8,9 @@ datasource db {
 }
 
 model admin {
-  id_admin Int     @id
-  username String? @db.VarChar(50)
-  password String? @db.VarChar(255)
+  id_admin Int    @id @default(autoincrement())
+  username String @db.VarChar(50)
+  password String @db.VarChar(255)
 }
 
 model area {
@@ -24,10 +24,12 @@ model area {
 model grupo {
   id_grupo      Int         @id @default(autoincrement())
   periodo       String?     @db.VarChar(10)
+  profesor      String?     @db.VarChar(200)
   hora_inicio   DateTime?   @db.Time(6)
   hora_fin      DateTime?   @db.Time(6)
   inscritos     Int?        @default(0)
   costo         Decimal?    @db.Money
+  admin_created Boolean?
   clave_materia Int?
   materia       materia?    @relation(fields: [clave_materia], references: [clave], onDelete: NoAction, onUpdate: NoAction, map: "fk_grupo_materia")
   solicitud     solicitud[]
