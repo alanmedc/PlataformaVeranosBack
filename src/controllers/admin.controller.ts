@@ -36,7 +36,7 @@ export const adminLogin = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Admin no encontrado." });
         }
 
-        const isValidPass = bcrypt.compareSync(password, admin.password);
+        const isValidPass = bcrypt.compareSync(password, admin.password!);
 
         if (!isValidPass) {
             return res.status(400).json({ message: "Contraseña no valida." });
@@ -115,6 +115,24 @@ export async function updateGroup(req: Request, res: Response) {
         return res.status(500).json({ message: 'Error al actualizar el grupo' });
     }
 }
+
+export async function groupInfo(req: Request, res: Response) {
+    try {
+        const groupId = parseInt(req.params.id);
+        const group = await prisma.grupo.findUnique({
+            where: { id_grupo: groupId },
+            include: {
+                solicitud: true
+            }
+        });
+
+        if(!group){
+            return res.status(404).json({message: 'Grupo no encontrado.'});
+        }
+
+        return res.status(200).json({message: 'Grupo encontrado.', data: group});
+    } catch (error) {
+        console.error(error);
 
 export async function getRequests(req: Request, res:Response) {
     try{
