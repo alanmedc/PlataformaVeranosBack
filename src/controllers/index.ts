@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { validarCaptura } from "../services/solicitud.services";
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -17,14 +18,34 @@ export async function getAdmins(req: Request, res: Response) {
 //Solicitudes
 export async function createRequest(req: Request, res: Response) {
     try {
-        const requestData = req.body;
+        const requestData = req.body
+        const captura = req.file;
 
         const requiredFields = ['expediente_alumno', 'nombre_alumno', 'ap_paterno', 'ap_materno', 'email_alumno', 'clave_materia'];
 
         for (const field of requiredFields) {
-            if (!requestData.hasOwnProperty(field) || requestData[field] === null || requestData[field] === undefined) {
+            if (!(field in requestData) || requestData[field] === null || requestData[field] === undefined) {
                 return res.status(400).json({ error: `El campo '${field}' es obligatorio` });
             }
+        }
+
+        //Parsear datos al tipo correcto.
+        requestData.expediente_alumno = parseInt(requestData.expediente_alumno)
+        requestData.clave_materia = parseInt(requestData.clave_materia)
+
+        if(!captura){
+            return res.status(400).json({code: "NO_FILE", message: "No se ha enviado ninguna captura de pantalla."});
+        }
+
+        const capturaValida = await validarCaptura(captura.buffer, req.body.expediente_alumno);
+
+
+        if(!req.body.expediente_alumno){
+            return res.status(400).json({code: "INCOMPLETE_DATA", message: "Faltan los siguientes datos: Expediente."});
+        }
+    
+        if(!capturaValida){
+            return res.status(400).json({code: "INVALID_FILE", message: "La captura de pantalla es inválida."});
         }
 
         const existingGroup = await prisma.grupo.findFirst({
