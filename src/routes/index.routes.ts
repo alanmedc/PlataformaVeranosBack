@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { apiOcr } from "../controllers/solicitudes";
 import { createRequest, getAdmins, getGroups, helloWorld } from "../controllers";
 import adminRouter from "./admin.routes";
 import { auth } from "../middlewares/auth";

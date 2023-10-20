@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { getAdmins } from "../controllers";
 import { auth } from "../middlewares/auth";
-import { adminLogin, updateGroup, groupInfo } from "../controllers/admin.controller";
 import { adminLogin, getRequests, updateGroup, groupInfo, getAllMaterias, getMateria } from "../controllers/admin.controller";
 
 
