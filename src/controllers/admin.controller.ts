@@ -133,6 +133,9 @@ export async function groupInfo(req: Request, res: Response) {
         return res.status(200).json({message: 'Grupo encontrado.', data: group});
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ message: 'Error al obtener la información de grupo' })
+    }
+}
 
 export async function getRequests(req: Request, res:Response) {
     try{
@@ -142,14 +145,57 @@ export async function getRequests(req: Request, res:Response) {
             where: { id_grupo: groupId }
         });
 
-        if(existingRequests.length == 0){
+        if (existingRequests.length == 0) {
             return res.status(400).json({ error: 'No existe ninguna solicitud para el grupo ingresado' });
         }
 
         return res.status(200).json(existingRequests);
 
-    } catch(error){
+    } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error al obtener las solicitudes' })
+    }
+}
+
+export async function getMateria(req: Request, res: Response) {
+    try {
+        const materiaId = parseInt(req.params.id, 10);
+
+        const existingMateria = await prisma.materia.findFirst({
+            where: { clave: materiaId },
+            include: {
+                area: {
+                    select: {
+                        nombre: true
+                    }
+                }
+            }
+        });
+
+        if (!existingMateria) {
+            return res.status(400).json({ error: 'No existe la materia seleccionada' });
+        }
+
+        return res.status(200).json(existingMateria);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener materias' })
+    }
+}
+
+export async function getAllMaterias(req: Request, res: Response) {
+    try {
+        const materias = await prisma.materia.findMany({
+            include: {
+                area: {
+                    select: {
+                        nombre: true
+                    }
+                }
+            }
+        });
+        return res.status(200).json(materias);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener materias' });
     }
 }
